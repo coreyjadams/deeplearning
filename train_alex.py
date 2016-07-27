@@ -10,10 +10,11 @@ import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 20
-        self.n_iteration_per_block = 10
+        self.max_iterations = 20000
+        self.n_iteration_per_block = 100
         self.n_tests = 100
-        self.start_iteration = 10
+        # Index starts from 0
+        self.start_iteration = 0
 
         self.training_prototxt = 'alex_net/train.prototxt'
         self.testing_prototxt = 'alex_net/test.prototxt'
@@ -23,9 +24,8 @@ class solveControlParams(object):
         # The number of iterations over which to average the gradient.
         # Effectively boosts the training batch size by the given factor, without
         # affecting memory utilization.
-        self.iter_size = 1
-        
-        self.max_iter = 100000     # # of times to update the net (training iterations)
+        self.iter_size =        
+1,        self.max_iter = 100000     # # of times to update the net (training iterations)
         
         # Solve using the stochastic gradient descent (SGD) algorithm.
         # Other choices include 'Adam' and 'RMSProp'.
@@ -53,7 +53,7 @@ class solveControlParams(object):
 
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
-        self.snapshot = 10
+        self.snapshot = 500
         self.snapshot_prefix = '/home/coradam/deeplearning/alex_net/alex_argoneut'
         self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         
@@ -107,12 +107,12 @@ class solveControlParams(object):
         savename += "_savestate_" + str(iteration)
         return savename
 
-    def saveTrainingData(self,iteration, trainingLoss, trainingAccuracy, testingAccuracy=None):
+    def saveTrainingData(self,iteration, trainingAccuracy,trainingLoss, testingAccuracy=None):
         fname = self.getSaveFile(iteration)
         if testingAccuracy is not None:
-            numpy.savez(fname, accuracy=trainingAccuracy,loss=trainingLoss,testAccuracy=testingAccuracy)
+            numpy.savez(fname,accuracy=trainingAccuracy,loss=trainingLoss,testAccuracy=testingAccuracy)
         else:
-            numpy.savez(fname, accuracy=trainingAccuracy,loss=trainingLoss)
+            numpy.savez(fname,accuracy=trainingAccuracy,loss=trainingLoss)
         pass
 
 
@@ -176,23 +176,26 @@ n_blocks = params.max_iterations / params.n_iteration_per_block
 for block in xrange(n_blocks):
 
 
-  loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'alex')
-  print "Finished block {}, last loss: {}; last acc: {}".format(block, loss[-1],acc[-1])
+    loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'alex')
+    print "Finished block {}, last loss: {}; last acc: {}".format(block, loss[-1],acc[-1])
 
 
-  # At the end of the block, run a testing network:
-  testNet = caffe.Net('alex_net/test.prototxt',weights['alex'], caffe.TEST)
-  test_accuracy = numpy.zeros(params.n_tests)
-  for i in xrange(params.n_tests):
-    test_accuracy[i] = testNet.forward()['accuracy']
-    iteration = (block)*params.n_iteration_per_block + params.start_iteration
 
-  print "Accuracy after {} iterations: {} +\- {} ".format(iteration, 
+    # At the end of the block, run a testing network:
+    testNet = caffe.Net('alex_net/test.prototxt',weights['alex'], caffe.TEST)
+    test_accuracy = numpy.zeros(params.n_tests)
+    for i in xrange(params.n_tests):
+        test_accuracy[i] = testNet.forward()['accuracy']
+
+    iteration = (block+1)*params.n_iteration_per_block + params.start_iteration
+
+
+    print "Accuracy after {} iterations: {} +\- {} ".format(iteration, 
                                                           numpy.mean(test_accuracy),
                                                           numpy.std(test_accuracy))
 
 
 
-  # At this point, we have the accuracy and loss from training, and the accuracy from testing
-  # Save it to a state file (which the params class can do)
-  params.saveTrainingData(iteration, acc, loss, test_accuracy)
+    # At this point, we have the accuracy and loss from training, and the accuracy from testing
+    # Save it to a state file (which the params class can do)
+    params.saveTrainingData(iteration, acc, loss, test_accuracy)
