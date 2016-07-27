@@ -1,11 +1,13 @@
 import numpy
 from matplotlib import pyplot as plt
 import glob
-
+from scipy import optimize
 
 # First, know the directory where the output is going:
 outdir = "/home/coradam/deeplearning/alex_net/figures/"
 sourcedir = "/home/coradam/deeplearning/alex_net/"
+
+plot_prefix = "alexnet_argoneut_"
 
 n_training_events = 500000
 n_testing_events = 200000
@@ -83,6 +85,9 @@ def plotLoss(loss):
   plt.legend(fontsize=25)
   plt.grid(True)
 
+  plt.savefig(outdir + plot_prefix + "loss.png")
+  plt.savefig(outdir + plot_prefix + "loss.pdf")
+
   plt.show()
 
 def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
@@ -92,18 +97,34 @@ def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
 
   epochs = numpy.arange(0,n_iterations) / (1.0*n_training_events)
 
+
   test_epochs = testacc_it / n_training_events
+
+  # Fit the last 25 points from the training with a line
+  
+
 
   fig, ax = plt.subplots(figsize=(12,8))
 
   plt.plot(epochs, trainingAccuracy,label="Test Accuracy")
   plt.plot(test_epochs, testAccuracy,label="Train Accuracy",marker="o",color='r',linewidth=4)
 
-  plt.xlabel("Epochs")
-  plt.xlabel("Accuracy")
+  plt.plot(test_epochs, [1]*len(test_epochs))
 
-  ax.set_ylim([0,1.2])
-  plt.legend()
+  plt.xlabel("Epochs",fontsize=25)
+  plt.xlabel("Accuracy",fontsize=25)
+
+
+  # Make the ticks bigger
+  for tick in ax.xaxis.get_major_ticks():
+      tick.label.set_fontsize(16)
+  for tick in ax.yaxis.get_major_ticks():
+      tick.label.set_fontsize(16)
+
+  plt.title("Accuracy of Alex Net")
+  ax.set_ylim([0,1.4])
+  plt.legend(fontsize=25)
+
 
   plt.grid(True)
   plt.show()
