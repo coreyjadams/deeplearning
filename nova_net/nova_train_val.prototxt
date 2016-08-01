@@ -6,10 +6,10 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 60
+    batch_size: 10
     filler_config: "/home/coradam/deeplearning/cfg/train_filler.cfg"
     filler_name: "Train"
-    use_thread: true
+#    use_thread: true
   }
 }
 
@@ -1808,32 +1808,33 @@ layer {
   bottom: "inception_5b/pool_proj"
   top: "inception_5b/output"
 }
-layer {
-  name: "pool5/7x7_s1"
-  type: "Pooling"
-  bottom: "inception_5b/output"
-  top: "pool5/7x7_s1"
-  pooling_param {
-    pool: AVE
-    ## Adapted from googlenet, Originally kernel_size: 7
-    kernel_h: 6
-    kernel_w: 5
-    stride: 1
-  }
-}
-layer {
-  name: "pool5/drop_7x7_s1"
-  type: "Dropout"
-  bottom: "pool5/7x7_s1"
-  top: "pool5/7x7_s1"
-  dropout_param {
-    dropout_ratio: 0.4
-  }
-}
+# layer {
+#   name: "pool5/7x7_s1"
+#   type: "Pooling"
+#   bottom: "inception_5b/output"
+#   top: "pool5/7x7_s1"
+#   pooling_param {
+#     pool: AVE
+#     ## Adapted from googlenet, Originally kernel_size: 7
+#     kernel_h: 6
+#     kernel_w: 5
+#     stride: 1
+#   }
+# }
+# layer {
+#   name: "pool5/drop_7x7_s1"
+#   type: "Dropout"
+#   bottom: "pool5/7x7_s1"
+#   top: "pool5/7x7_s1"
+#   dropout_param {
+#     dropout_ratio: 0.4
+#   }
+# }
 layer {
   name: "loss3/classifier"
   type: "InnerProduct"
-  bottom: "pool5/7x7_s1"
+  bottom: "inception_5b/output"
+# bottom: "pool5/7x7_s1"
   top: "loss3/classifier"
   param {
     lr_mult: 1
@@ -1868,9 +1869,9 @@ layer {
   bottom: "loss3/classifier"
   bottom: "label"
   top: "loss3/top-1"
-  include {
-    phase: TEST
-  }
+#  include {
+#    phase: TEST
+#  }
 }
 layer {
   name: "loss3/top-5"
@@ -1881,7 +1882,7 @@ layer {
   include {
     phase: TEST
   }
-  accuracy_param {
-    top_k: 5
-  }
+#  accuracy_param {
+#    top_k: 5
+#  }
 }

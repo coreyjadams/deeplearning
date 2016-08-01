@@ -1,3 +1,6 @@
 *.h5
 *.npz
 *.pyc
+*.solverstate
+*.caffemodel
+*.log

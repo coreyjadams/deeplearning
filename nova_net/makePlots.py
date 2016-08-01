@@ -4,16 +4,16 @@ import glob
 from scipy import optimize
 
 # First, know the directory where the output is going:
-outdir = "/home/coradam/deeplearning/alex_net/figures/"
-sourcedir = "/home/coradam/deeplearning/alex_net/"
+outdir = "/home/coradam/deeplearning/nova_net/figures/"
+sourcedir = "/home/coradam/deeplearning/nova_net/"
 
-plot_prefix = "alexnet_argoneut_"
+plot_prefix = "novanet_argoneut_"
 
 n_training_events = 500000
 n_testing_events = 200000
 
 #this is the prefix to the files:
-fileprefix = "alex_argoneut_savestate_"
+fileprefix = "nova_argoneut_savestate_"
 
 def readFiles():
 
@@ -41,6 +41,7 @@ def readFiles():
 
   for iteration, filename in temp:
     dat = numpy.load(filename)
+    print dat['accuracy'].shape
     loss_list.append(dat['loss'])
     acc_list.append(dat['accuracy'])
     testacc_list.append(dat['testAccuracy'])
@@ -64,13 +65,20 @@ def plotLoss(loss):
 
   # Calculate the number of epochs this has been (using the length )
 
+  # print loss
+  # exit()
+
   n_iterations = len(loss)
 
   epochs = numpy.arange(0,n_iterations) / (1.0*n_training_events)
   
   fig, ax = plt.subplots(figsize=(12,8))
 
-  plt.semilogy(epochs,loss,label="Loss")
+  print len(epochs)
+  print len(loss)
+  print loss
+
+  plt.plot(epochs,loss,label="Loss")
   plt.xlabel("Epochs",fontsize=25)
   plt.ylabel("Loss",fontsize=25)
 
@@ -121,7 +129,7 @@ def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
   for tick in ax.yaxis.get_major_ticks():
       tick.label.set_fontsize(16)
 
-  plt.title("Accuracy of Alex Net")
+  plt.title("Accuracy of Nova Net")
   ax.set_ylim([0,1.4])
   plt.legend(fontsize=25)
 
@@ -133,14 +141,16 @@ def main():
 
   accuracy, loss, testaccuracy, testacc_it = readFiles()
 
-  # This is temporary:
-  temp = loss
-  loss = accuracy
-  accuracy = temp
+  print accuracy.shape
+
+  # # This is temporary:
+  # temp = loss
+  # loss = accuracy
+  # accuracy = temp
 
 
-  plotLoss(loss)
-  plotAccuracy(accuracy, testaccuracy, testacc_it)
+  # plotLoss(loss)
+  # plotAccuracy(accuracy, testaccuracy, testacc_it)
 
 
 if __name__ == '__main__':

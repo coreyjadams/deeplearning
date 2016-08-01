@@ -5,20 +5,19 @@ caffe.set_device(1)
 
 import numpy
 
-import alex_net.solver
 import tempfile
 import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 200000
-        self.n_iteration_per_block = 500
+        self.max_iterations = 1000000
+        self.n_iteration_per_block = 1000
         self.n_tests = 200
         # Index starts from 0
-        self.start_iteration = 10000
+        self.start_iteration = 0
 
-        self.training_prototxt = 'alex_net/train.prototxt'
-        self.testing_prototxt = 'alex_net/test.prototxt'
+        self.training_prototxt = 'alex_net_parallel/train.prototxt'
+        self.testing_prototxt = 'alex_net_parallel/test.prototxt'
 
 
         # This outlines the parameters of the solver:
@@ -55,7 +54,7 @@ class solveControlParams(object):
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
         self.snapshot = 500
-        self.snapshot_prefix = '/home/coradam/deeplearning/alex_net/alex_argoneut'
+        self.snapshot_prefix = '/home/coradam/deeplearning/alex_net_parallel/alex_argoneut'
         self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         
         # Train on the GPU.  Using the CPU to train large networks is very slow.
@@ -79,8 +78,8 @@ class solveControlParams(object):
         s.train_net = train_net_path
         if test_net_path is not None:
             s.test_net.append(test_net_path)
-            s.test_interval = 1000  # Test after every 1000 training iterations.
-            s.test_iter.append(100) # Test on 100 batches each time we test.
+            s.test_interval = self.n_iteration_per_block  # Test after every 1000 training iterations.
+            s.test_iter.append(self.n_tests) # Test on 100 batches each time we test.
 
 
         s.iter_size = self.iter_size
@@ -178,25 +177,24 @@ for block in xrange(n_blocks):
 
 
     loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'alex')
-    print "Finished block {}, last loss: {}; last acc: {}".format(block, loss[-1],acc[-1])
 
 
 
     # At the end of the block, run a testing network:
-    testNet = caffe.Net('alex_net/test.prototxt',weights['alex'], caffe.TEST)
-    test_accuracy = numpy.zeros(params.n_tests)
-    for i in xrange(params.n_tests):
-        test_accuracy[i] = testNet.forward()['accuracy']
+    # testNet = caffe.Net('alex_net_parallel/test.prototxt',weights['alex'], caffe.TEST)
+    # test_accuracy = numpy.zeros(params.n_tests)
+    # for i in xrange(params.n_tests):
+    #     test_accuracy[i] = testNet.forward()['accuracy']
 
     iteration = (block+1)*params.n_iteration_per_block + params.start_iteration
 
 
-    print "Accuracy after {} iterations: {} +\- {} ".format(iteration, 
-                                                          numpy.mean(test_accuracy),
-                                                          numpy.std(test_accuracy))
+    # print "Accuracy after {} iterations: {} +\- {} ".format(iteration, 
+    #                                                       numpy.mean(test_accuracy),
+    #                                                       numpy.std(test_accuracy))
 
 
 
     # At this point, we have the accuracy and loss from training, and the accuracy from testing
     # Save it to a state file (which the params class can do)
-    params.saveTrainingData(iteration, acc, loss, test_accuracy)
+    params.saveTrainingData(iteration, acc, loss)
