@@ -6,7 +6,7 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 10
+    batch_size: 16
     filler_config: "/home/coradam/deeplearning/cfg/train_filler.cfg"
     filler_name: "Train"
 #    use_thread: true
@@ -1816,8 +1816,8 @@ layer {
 #   pooling_param {
 #     pool: AVE
 #     ## Adapted from googlenet, Originally kernel_size: 7
-#     kernel_h: 6
-#     kernel_w: 5
+#     kernel_h: 4
+#     kernel_w: 4
 #     stride: 1
 #   }
 # }
@@ -1856,33 +1856,41 @@ layer {
   }
 }
 layer {
-  name: "loss3/loss3"
-  type: "SoftmaxWithLoss"
+  name: "fc8"
+  type: "InnerProduct"
   bottom: "loss3/classifier"
-  bottom: "label"
-  top: "loss3/loss3"
-  loss_weight: 1
-}
-layer {
-  name: "loss3/top-1"
-  type: "Accuracy"
-  bottom: "loss3/classifier"
-  bottom: "label"
-  top: "loss3/top-1"
-#  include {
-#    phase: TEST
-#  }
-}
-layer {
-  name: "loss3/top-5"
-  type: "Accuracy"
-  bottom: "loss3/classifier"
-  bottom: "label"
-  top: "loss3/top-5"
-  include {
-    phase: TEST
+  top: "fc8"
+  param {
+    lr_mult: 1
+    decay_mult: 1
   }
-#  accuracy_param {
-#    top_k: 5
-#  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 2
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc8"
+  bottom: "label"
+  top: "accuracy"
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc8"
+  bottom: "label"
+  top: "loss"
 }

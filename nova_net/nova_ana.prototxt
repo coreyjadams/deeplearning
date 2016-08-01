@@ -1,4 +1,5 @@
 name: "NovaNet"
+
 layer {
   name: "data"
   type: "ROOTData"
@@ -6,12 +7,13 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 1
-    filler_config: "/home/coradam/deeplearning/cfg/test_filler.cfg"
-    filler_name: "Train"
-#    use_thread: true
+    batch_size: 10
+    filler_config: "/home/coradam/deeplearning/cfg/nue_filler.cfg"
+    filler_name: "Ana"
+    # use_thread: true
   }
 }
+
 
 layer {
   name: "slice"
@@ -1879,6 +1881,12 @@ layer {
       value: 0
     }
   }
+}
+layer {
+  name: "probt"
+  type: "Softmax"
+  bottom: "fc8"
+  top: "probt"
 }
 layer {
   name: "accuracy"

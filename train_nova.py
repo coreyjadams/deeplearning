@@ -1,7 +1,7 @@
 import caffe
 from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
-caffe.set_device(0)
+# caffe.set_device(0)
 
 import numpy
 
@@ -12,8 +12,8 @@ import os
 class solveControlParams(object):
     def __init__(self):
         self.max_iterations = 1000000
-        self.n_iteration_per_block = 1000
-        self.n_tests = 1000
+        self.n_iteration_per_block = 5000
+        self.n_tests = 200
         # Index starts from 0
         self.start_iteration = 0
 
@@ -121,7 +121,7 @@ def run_solver(niter, solver, name):
     """Run solver for niter iterations,
        returning the loss and accuracy recorded each iteration.
        `solver` is a list of (name, solver) tuples."""
-    blobs = ('loss3/loss3', 'loss3/top-1')
+    blobs = ('loss', 'accuracy')
     loss = numpy.zeros(niter)
     acc = numpy.zeros(niter)
 
@@ -173,13 +173,13 @@ n_blocks = params.max_iterations / params.n_iteration_per_block
 for block in xrange(n_blocks):
 
 
-    loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'alex')
+    loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'nova')
     print "Finished block {}, last loss: {}; last acc: {}".format(block, loss[-1],acc[-1])
 
 
 
-    # # At the end of the block, run a testing network:
-    # testNet = caffe.Net('alex_net/test.prototxt',weights['alex'], caffe.TEST)
+    # # # At the end of the block, run a testing network:
+    # testNet = caffe.Net(params.testing_prototxt,weights['nova'], caffe.TEST)
     # test_accuracy = numpy.zeros(params.n_tests)
     # for i in xrange(params.n_tests):
     #     test_accuracy[i] = testNet.forward()['accuracy']

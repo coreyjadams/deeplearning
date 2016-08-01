@@ -1,7 +1,7 @@
 import caffe
 from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
-caffe.set_device(1)
+caffe.set_device(0)
 
 import numpy
 
@@ -10,14 +10,14 @@ import os
 from matplotlib import pyplot as plt
 
 # We need the input network:
-net_file = '/home/coradam/deeplearning/alex_net_parallel/ana.prototxt'
-weights = '/home/coradam/deeplearning/alex_net_parallel/alex_argoneut_iter_80000.caffemodel.h5'
+net_file = '/home/coradam/deeplearning/nova_net/nova_ana.prototxt'
+weights = '/home/coradam/deeplearning/nova_net/nova_argoneut_iter_10000.caffemodel'
 
 key='probt'
 
 testNet = caffe.Net(net_file,weights, caffe.TEST)
 
-n_events = 144000
+n_events = 5000
 batch_size=10
 
 print_steps = n_events / (10*batch_size)
@@ -43,7 +43,7 @@ for i in xrange(n_events/batch_size):
     # softmax = net.blobs["probt"].data
     # acc     = net.blobs['accuracy'].data
 
-bins = numpy.arange(0,1.01,0.05)
+bins = numpy.arange(0,1.01,0.025)
 
 # make a histogram of the output:
 # 
@@ -67,11 +67,12 @@ print cut_eff
 
 fig,ax = plt.subplots(figsize=(12,9))
 
-plt.bar(plot_bins,score_hist,width=0.05,label=r"$\nu_e$ CC")
+plt.bar(plot_bins,score_hist,width=0.025,label=r"$\nu_e$ CC")
 
 for val, eff,col in zip(cut_vals,cut_eff,colors):
   plt.axvline(val,ls = '--', linewidth=5, color = col, label="{}% efficiency".format(int(100*eff)))
 
+plt.title("Nova Network",fontsize=30)
 
 # Make the ticks bigger
 for tick in ax.xaxis.get_major_ticks():
@@ -84,6 +85,6 @@ plt.xlabel("Classifier Score",fontsize=30)
 
 plt.grid(True)
 plt.legend(loc=2,fontsize=25)
-plt.savefig("/home/coradam/deeplearning/alex_net_parallel/figures/classifier_nue_scores.pdf",format='pdf')
-plt.savefig("/home/coradam/deeplearning/alex_net_parallel/figures/classifier_nue_scores.png",format='png')
+plt.savefig("/home/coradam/deeplearning/nova_net/figures/classifier_nue_scores.pdf",format='pdf')
+plt.savefig("/home/coradam/deeplearning/nova_net/figures/classifier_nue_scores.png",format='png')
 plt.show()

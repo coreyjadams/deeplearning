@@ -9,7 +9,7 @@ sourcedir = "/home/coradam/deeplearning/nova_net/"
 
 plot_prefix = "novanet_argoneut_"
 
-n_training_events = 500000
+n_training_events = 500000/16.
 n_testing_events = 200000
 
 #this is the prefix to the files:
@@ -32,16 +32,16 @@ def readFiles():
   temp = zip(iterations,files)
   temp.sort()
 
+  print temp
+
   loss_list = []
   acc_list = []
   testacc_list = []
-
 
   n_points = 0
 
   for iteration, filename in temp:
     dat = numpy.load(filename)
-    print dat['accuracy'].shape
     loss_list.append(dat['loss'])
     acc_list.append(dat['accuracy'])
     testacc_list.append(dat['testAccuracy'])
@@ -50,16 +50,18 @@ def readFiles():
   # Package the various things into one 
   loss = numpy.asarray(loss_list).flatten()
   acc = numpy.asarray(acc_list).flatten()
+  test = numpy.asarray(testacc_list).flatten()
     
   # The test accuracy has to be combined into 
 
-  testacc = numpy.zeros(len(testacc_list))
+  test = numpy.zeros(len(testacc_list))
   testacc_it = numpy.zeros(len(testacc_list))
   for i in xrange(len(testacc_list)):
-    testacc[i] = numpy.mean(testacc_list[i])
+    test[i] = numpy.mean(testacc_list[i])
     testacc_it[i] = temp[i][0]
 
-  return acc, loss, testacc, testacc_it
+  return acc, loss, test, testacc_it
+
 
 def plotLoss(loss):
 
@@ -72,11 +74,12 @@ def plotLoss(loss):
 
   epochs = numpy.arange(0,n_iterations) / (1.0*n_training_events)
   
+
   fig, ax = plt.subplots(figsize=(12,8))
 
-  print len(epochs)
-  print len(loss)
-  print loss
+  # print len(epochs)
+  # print len(loss)
+  # print loss
 
   plt.plot(epochs,loss,label="Loss")
   plt.xlabel("Epochs",fontsize=25)
@@ -89,7 +92,7 @@ def plotLoss(loss):
       tick.label.set_fontsize(16)
 
 
-  plt.title("Loss of Alex Net",fontsize=30)
+  plt.title("Loss of Nova Net",fontsize=30)
   plt.legend(fontsize=25)
   plt.grid(True)
 
@@ -97,7 +100,6 @@ def plotLoss(loss):
   plt.savefig(outdir + plot_prefix + "loss.pdf")
 
   plt.show()
-
 def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
 
   n_iterations = len(trainingAccuracy)
@@ -137,20 +139,14 @@ def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
   plt.grid(True)
   plt.show()
 
+
 def main():
 
-  accuracy, loss, testaccuracy, testacc_it = readFiles()
-
-  print accuracy.shape
-
-  # # This is temporary:
-  # temp = loss
-  # loss = accuracy
-  # accuracy = temp
+  accuracy, loss, test, test_it = readFiles()
 
 
-  # plotLoss(loss)
-  # plotAccuracy(accuracy, testaccuracy, testacc_it)
+  plotLoss(loss)
+  plotAccuracy(accuracy, test, test_it)
 
 
 if __name__ == '__main__':
