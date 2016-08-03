@@ -17,7 +17,7 @@ key='probt'
 
 testNet = caffe.Net(net_file,weights, caffe.TEST)
 
-n_events = 100
+n_events = 144000
 batch_size=10
 
 print_steps = n_events / (10*batch_size)
@@ -27,14 +27,14 @@ output = numpy.zeros(n_events)
 for i in xrange(n_events/batch_size):
 
     testNet.forward()
-    print testNet.blobs[key].data
+    # print testNet.blobs[key].data
     for j in xrange(batch_size):
       output[i*batch_size + j] = testNet.blobs[key].data[j][1]
 
 
 
-    if i % print_steps == 0:
-      print "On iteration {} of {}.".format(i*batch_size, n_events)
+    # if i % print_steps == 0:
+    print "On iteration {} of {}.".format(i*batch_size, n_events)
 
 # print testNet.blobs['loss3/top-1'].data
 # print testNet.blobs['loss3/top-5'].data
