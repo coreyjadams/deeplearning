@@ -1,7 +1,7 @@
 import caffe
 from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
-caffe.set_device(1)
+caffe.set_device(0)
 
 import numpy
 
@@ -33,8 +33,8 @@ for i in xrange(n_events/batch_size):
 
 
 
-    if i % print_steps == 0:
-      print "On iteration {} of {}.".format(i*batch_size, n_events)
+    # if i % print_steps == 0:
+    print "On iteration {} of {}.".format(i*batch_size, n_events)
 
 # print testNet.blobs['loss3/top-1'].data
 # print testNet.blobs['loss3/top-5'].data
