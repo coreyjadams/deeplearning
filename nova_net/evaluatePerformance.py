@@ -1,7 +1,7 @@
 import caffe
 from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
-caffe.set_device(0)
+caffe.set_device(1)
 
 import numpy
 
@@ -11,14 +11,15 @@ from matplotlib import pyplot as plt
 
 # We need the input network:
 net_file = '/home/coradam/deeplearning/nova_net/nova_ana.prototxt'
-weights = '/home/coradam/deeplearning/nova_net/nova_argoneut_iter_135000.caffemodel'
+weights = '/home/coradam/deeplearning/nova_net/nova_argoneut_iter_20000.caffemodel'
 
 key='probt'
 
 testNet = caffe.Net(net_file,weights, caffe.TEST)
 
-n_events = 144000
-batch_size=10
+n_events = 54407
+n_events = 1000
+batch_size=5
 
 print_steps = n_events / (10*batch_size)
 

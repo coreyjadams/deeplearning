@@ -9,8 +9,8 @@ sourcedir = "/home/coradam/deeplearning/alex_net/"
 
 plot_prefix = "alexnet_argoneut_"
 
-n_training_events = 500000 / 60.
-n_testing_events = 200000 / 100.
+n_training_events = (18454. + 24470) / 30.
+n_testing_events = (54407 + 8793) / 200.
 
 #this is the prefix to the files:
 fileprefix = "alex_argoneut_savestate_"
@@ -41,17 +41,12 @@ def readFiles():
 
   for iteration, filename in temp:
     dat = numpy.load(filename)
-    # If the iteration is less than 10000, switch the loss and accuracy:
-    if iteration < 10000:
-      continue
-      loss_list.append(dat['accuracy'])
-      acc_list.append(dat['loss'])
-    else:
-      loss_list.append(dat['loss'])
-      acc_list.append(dat['accuracy'])
+    loss_list.append(dat['loss'])
+    acc_list.append(dat['accuracy'])
     testacc_list.append(dat['testAccuracy'])
     n_points += len(dat['loss'])
   
+
   # Package the various things into one 
   loss = numpy.asarray(loss_list).flatten()
   acc = numpy.asarray(acc_list).flatten()

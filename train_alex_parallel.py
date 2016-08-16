@@ -10,11 +10,11 @@ import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 1000000
-        self.n_iteration_per_block = 1000
+        self.max_iterations = 50000
+        self.n_iteration_per_block = 500
         self.n_tests = 200
         # Index starts from 0
-        self.start_iteration = 0
+        self.start_iteration = 1000
 
         self.training_prototxt = 'alex_net_parallel/train.prototxt'
         self.testing_prototxt = 'alex_net_parallel/test.prototxt'
@@ -29,7 +29,7 @@ class solveControlParams(object):
         
         # Solve using the stochastic gradient descent (SGD) algorithm.
         # Other choices include 'Adam' and 'RMSProp'.
-        self.type = 'SGD'
+        self.type = 'RMSProp'
 
         # Set the initial learning rate for SGD.
         self.base_lr = 0.0005
@@ -53,7 +53,7 @@ class solveControlParams(object):
 
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
-        self.snapshot = 500
+        self.snapshot = 1000
         self.snapshot_prefix = '/home/coradam/deeplearning/alex_net_parallel/alex_argoneut'
         self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         

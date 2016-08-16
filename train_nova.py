@@ -1,7 +1,7 @@
 import caffe
 from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
-# caffe.set_device(0)
+caffe.set_device(1)
 
 import numpy
 
@@ -11,11 +11,11 @@ import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 1000000
-        self.n_iteration_per_block = 5000
+        self.max_iterations = 50000
+        self.n_iteration_per_block = 1000
         self.n_tests = 200
         # Index starts from 0
-        self.start_iteration = 0
+        self.start_iteration = 20000
 
         self.training_prototxt = 'nova_net/nova_train_val.prototxt'
         self.testing_prototxt = 'nova_net/nova_test_val.prototxt'
@@ -33,7 +33,7 @@ class solveControlParams(object):
         self.type = 'SGD'
 
         # Set the initial learning rate for SGD.
-        self.base_lr = 0.001
+        self.base_lr = 0.0005
 
         # Set `lr_policy` to define how the learning rate changes during training.
         # Here, we 'step' the learning rate by multiplying it by a factor `gamma`
@@ -54,7 +54,7 @@ class solveControlParams(object):
 
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
-        self.snapshot = 5000
+        self.snapshot = 2000
         self.snapshot_prefix = '/home/coradam/deeplearning/nova_net/nova_argoneut'
         # self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         
@@ -64,7 +64,7 @@ class solveControlParams(object):
     def getStartSnapshot(self):
         snapshot = self.snapshot_prefix
         it = self.start_iteration
-        snapshot += "_iter_" + str(it) + ".solverstate.h5"
+        snapshot += "_iter_" + str(it) + ".solverstate"
         if os.path.isfile(snapshot):
             return snapshot
         else:

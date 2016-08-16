@@ -5,20 +5,19 @@ caffe.set_device(1)
 
 import numpy
 
-import alex_net.solver
 import tempfile
 import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 200000
+        self.max_iterations = 20000
         self.n_iteration_per_block = 500
         self.n_tests = 200
         # Index starts from 0
-        self.start_iteration = 10000
+        self.start_iteration = 24000
 
-        self.training_prototxt = 'alex_net/train.prototxt'
-        self.testing_prototxt = 'alex_net/test.prototxt'
+        self.training_prototxt = '/home/coradam/deeplearning/alex_net/train.prototxt'
+        self.testing_prototxt = '/home/coradam/deeplearning/alex_net/test.prototxt'
 
 
         # This outlines the parameters of the solver:
@@ -54,7 +53,7 @@ class solveControlParams(object):
 
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
-        self.snapshot = 500
+        self.snapshot = 1000
         self.snapshot_prefix = '/home/coradam/deeplearning/alex_net/alex_argoneut'
         self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         

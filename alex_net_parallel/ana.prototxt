@@ -6,8 +6,8 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 10
-    filler_config: "/home/coradam/deeplearning/cfg/nue_filler.cfg"
+    batch_size: 1
+    filler_config: "/home/coradam/deeplearning/cfg/process_alex.cfg"
     filler_name: "Ana"
     # use_thread: true
   }

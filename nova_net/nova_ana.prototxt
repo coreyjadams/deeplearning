@@ -7,8 +7,8 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 10
-    filler_config: "/home/coradam/deeplearning/cfg/nue_filler.cfg"
+    batch_size: 5
+    filler_config: "/home/coradam/deeplearning/cfg/process_nova.cfg"
     filler_name: "Ana"
     # use_thread: true
   }
@@ -1847,7 +1847,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 1000
+    num_output: 100
     weight_filler {
       type: "xavier"
     }

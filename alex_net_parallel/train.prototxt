@@ -6,7 +6,7 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 50
+    batch_size: 20
     filler_config: "/home/coradam/deeplearning/cfg/train_filler.cfg"
     filler_name: "Train"
     # use_thread: true
@@ -495,7 +495,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 4096
+    num_output: 2048
     weight_filler {
       type: "gaussian"
       std: 0.005
@@ -535,7 +535,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 4096
+    num_output: 2048
     weight_filler {
       type: "gaussian"
       std: 0.005
