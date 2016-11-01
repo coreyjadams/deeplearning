@@ -4,10 +4,10 @@ import glob
 from scipy import optimize
 
 # First, know the directory where the output is going:
-outdir = "/home/coradam/deeplearning/alex_net_parallel/figures/"
-sourcedir = "/home/coradam/deeplearning/alex_net_parallel/"
+outdir = "/home/coradam/deeplearning/resnet/figures/"
+sourcedir = "/home/coradam/deeplearning/resnet/"
 
-plot_prefix = "alexnet_argoneut_"
+plot_prefix = "resnet_argoneut_"
 
 n_training_events = 500000 / 60.
 n_testing_events = 200000 / 200.
@@ -15,7 +15,7 @@ n_testing_events = 200000 / 200.
 n_tests = 200
 
 # this is the prefix to the files:
-fileprefix = "alex_argoneut_savestate_"
+fileprefix = "resnet_argoneut_savestate_"
 
 
 def readFiles():
@@ -94,7 +94,7 @@ def plotLoss(loss):
     for tick in ax.yaxis.get_major_ticks():
         tick.label.set_fontsize(16)
 
-    plt.title("Loss of Alex Net Parallel", fontsize=30)
+    plt.title("Loss of ResNet", fontsize=30)
     plt.legend(fontsize=25)
     plt.grid(True)
 
@@ -139,7 +139,7 @@ def plotAccuracy(trainingAccuracy, testAccuracy=None, testacc_it=None):
     for tick in ax.yaxis.get_major_ticks():
         tick.label.set_fontsize(16)
 
-    plt.title("Accuracy of Alex Net Parallel")
+    plt.title("Accuracy of ResNet")
     ax.set_ylim([0, 1.4])
     plt.legend(fontsize=25)
 

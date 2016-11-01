@@ -6,10 +6,9 @@ layer {
   top: "label"
 
   root_data_param {
-    batch_size: 60
-    filler_config: "/home/coradam/deeplearning/cfg/train_filler.cfg"
+    batch_size: 40
+    filler_config: "/home/coradam/deeplearning/cfg/scale_downsample_train.cfg"
     filler_name: "Train"
-    use_thread: true
   }
 }
 layer {

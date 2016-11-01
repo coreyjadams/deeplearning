@@ -1,7 +1,7 @@
 import caffe
 from caffe.proto import caffe_pb2
 caffe.set_mode_gpu()
-caffe.set_device(1)
+caffe.set_device(0)
 
 import numpy
 
@@ -10,11 +10,11 @@ import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 20000
-        self.n_iteration_per_block = 500
+        self.max_iterations = 200000
+        self.n_iteration_per_block = 1000
         self.n_tests = 200
         # Index starts from 0
-        self.start_iteration = 24000
+        self.start_iteration = 14000
 
         self.training_prototxt = '/home/coradam/deeplearning/alex_net/train.prototxt'
         self.testing_prototxt = '/home/coradam/deeplearning/alex_net/test.prototxt'
@@ -53,7 +53,7 @@ class solveControlParams(object):
 
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
-        self.snapshot = 1000
+        self.snapshot = 2000
         self.snapshot_prefix = '/home/coradam/deeplearning/alex_net/alex_argoneut'
         self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         
@@ -182,20 +182,21 @@ for block in xrange(n_blocks):
 
 
     # At the end of the block, run a testing network:
-    testNet = caffe.Net('alex_net/test.prototxt',weights['alex'], caffe.TEST)
-    test_accuracy = numpy.zeros(params.n_tests)
-    for i in xrange(params.n_tests):
-        test_accuracy[i] = testNet.forward()['accuracy']
+    # testNet = caffe.Net('alex_net/test.prototxt',weights['alex'], caffe.TEST)
+    # test_accuracy = numpy.zeros(params.n_tests)
+    # for i in xrange(params.n_tests):
+        # test_accuracy[i] = testNet.forward()['accuracy']
 
     iteration = (block+1)*params.n_iteration_per_block + params.start_iteration
 
 
-    print "Accuracy after {} iterations: {} +\- {} ".format(iteration, 
-                                                          numpy.mean(test_accuracy),
-                                                          numpy.std(test_accuracy))
+    # print "Accuracy after {} iterations: {} +\- {} ".format(iteration, 
+    #                                                       numpy.mean(test_accuracy),
+    #                                                       numpy.std(test_accuracy))
 
 
 
     # At this point, we have the accuracy and loss from training, and the accuracy from testing
     # Save it to a state file (which the params class can do)
-    params.saveTrainingData(iteration, acc, loss, test_accuracy)
+    params.saveTrainingData(iteration, acc, loss)
+    # params.saveTrainingData(iteration, acc, loss, test_accuracy)

@@ -10,21 +10,21 @@ import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 50000
-        self.n_iteration_per_block = 1000
-        self.n_tests = 200
+        self.max_iterations = 100000
+        self.n_iteration_per_block = 500
+        self.n_tests = 400
         # Index starts from 0
-        self.start_iteration = 1000
+        self.start_iteration = 4000
 
-        self.training_prototxt = '/home/coradam/deeplearning/alex_net_parallel/train.prototxt'
-        self.testing_prototxt = '/home/coradam/deeplearning/alex_net_parallel/test.prototxt'
+        self.training_prototxt = 'resnet/train.prototxt'
+        self.testing_prototxt = 'resnet/test.prototxt'
 
 
         # This outlines the parameters of the solver:
         # The number of iterations over which to average the gradient.
         # Effectively boosts the training batch size by the given factor, without
         # affecting memory utilization.
-        self.iter_size = 1
+        self.iter_size =1
         self.max_iter = 1000000     # # of times to update the net (training iterations)
         
         # Solve using the stochastic gradient descent (SGD) algorithm.
@@ -53,9 +53,9 @@ class solveControlParams(object):
 
         # Snapshots are files used to store networks we've trained.  Here, we'll
         # snapshot every 10K iterations -- ten times during training.
-        self.snapshot = 1000
-        self.snapshot_prefix = '/home/coradam/deeplearning/alex_net_parallel/alex_argoneut'
-        self.snapshot_format = caffe_pb2.SolverParameter.HDF5
+        self.snapshot = 2000
+        self.snapshot_prefix = '/home/coradam/deeplearning/resnet/resnet_argoneut'
+        # self.snapshot_format = caffe_pb2.SolverParameter.HDF5
         
         # Train on the GPU.  Using the CPU to train large networks is very slow.
         self.solver_mode = caffe_pb2.SolverParameter.GPU
@@ -63,7 +63,7 @@ class solveControlParams(object):
     def getStartSnapshot(self):
         snapshot = self.snapshot_prefix
         it = self.start_iteration
-        snapshot += "_iter_" + str(it) + ".solverstate.h5"
+        snapshot += "_iter_" + str(it) + ".solverstate"
         if os.path.isfile(snapshot):
             return snapshot
         else:
@@ -78,8 +78,8 @@ class solveControlParams(object):
         s.train_net = train_net_path
         if test_net_path is not None:
             s.test_net.append(test_net_path)
-            s.test_interval = self.n_iteration_per_block  # Test after every 1000 training iterations.
-            s.test_iter.append(self.n_tests) # Test on 100 batches each time we test.
+            s.test_interval = 10  # Test after every 1000 training iterations.
+            s.test_iter.append(100) # Test on 100 batches each time we test.
 
 
         s.iter_size = self.iter_size
@@ -95,7 +95,7 @@ class solveControlParams(object):
         s.snapshot = self.snapshot
         s.snapshot_prefix = self.snapshot_prefix
         s.solver_mode = self.solver_mode
-        s.snapshot_format = self.snapshot_format
+        # s.snapshot_format = self.snapshot_format
 
         # Write the solver to a temporary file and return its filename.
         with tempfile.NamedTemporaryFile(delete=False) as f:
@@ -120,14 +120,9 @@ def run_solver(niter, solver, name):
     """Run solver for niter iterations,
        returning the loss and accuracy recorded each iteration.
        `solver` is a list of (name, solver) tuples."""
-    blobs = ('loss', 'accuracy')
+    blobs = ('loss', 'acc')
     loss = numpy.zeros(niter)
     acc = numpy.zeros(niter)
-
-    print loss.shape
-    print acc.shape
-
-    # print solver
 
     for it in range(niter):
         solver.step(1)  # run a single SGD step in Caffe
@@ -161,6 +156,7 @@ else:
 #   solver = caffe.
 #   pass
 
+
 # result = run_solver(5,solver, 'alex', 1)
 
 # Loop for some number of iterations, and break it into blocks.
@@ -176,12 +172,13 @@ n_blocks = params.max_iterations / params.n_iteration_per_block
 for block in xrange(n_blocks):
 
 
-    loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'alex')
+    loss, acc, weights = run_solver(params.n_iteration_per_block, solver,'nova')
+    print "Finished block {}, last loss: {}; last acc: {}".format(block, loss[-1],acc[-1])
 
 
 
-    # At the end of the block, run a testing network:
-    # testNet = caffe.Net(params.testing_prototxt,weights['alex'], caffe.TEST)
+    # # # At the end of the block, run a testing network:
+    # testNet = caffe.Net(params.testing_prototxt,weights['nova'], caffe.TEST)
     # test_accuracy = numpy.zeros(params.n_tests)
     # for i in xrange(params.n_tests):
         # test_accuracy[i] = testNet.forward()['accuracy']
@@ -193,7 +190,7 @@ for block in xrange(n_blocks):
     #                                                       numpy.mean(test_accuracy),
     #                                                       numpy.std(test_accuracy))
 
-    # del testNet
+
 
     # At this point, we have the accuracy and loss from training, and the accuracy from testing
     # Save it to a state file (which the params class can do)

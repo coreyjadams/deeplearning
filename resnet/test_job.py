@@ -33,15 +33,15 @@ file_prefix.update({'anu_sim' : 'genie_anu_mc_'})
 
 # We need the input network:
 # net_file = '/home/coradam/alex_example/ana.prototxt'
-net_file = '/home/coradam/deeplearning/alex_net/ana.prototxt'
-weights = '/home/coradam/deeplearning/alex_net/alex_argoneut_iter_10000.caffemodel.h5'
+net_file = '/home/coradam/deeplearning/resnet/ana.prototxt'
+weights = '/home/coradam/deeplearning/resnet/resnet_argoneut_iter_8000.caffemodel'
 # weights = '/home/coradam/alex_net_example/corey_iter_15500.caffemodel.h5'
 key='probt'
 
 
 def writeCfgFile(inputFile):
   base_file = "/home/coradam/deeplearning/cfg/scale_downsample_data.cfg"
-  out_file = "/home/coradam/deeplearning/cfg/process_alex.cfg"
+  out_file = "/home/coradam/deeplearning/cfg/process_resnet.cfg"
 
   # Read in the base file:
   with open(base_file,"r") as _in:
@@ -63,7 +63,7 @@ def processFile(inputFile):
   testNet = caffe.Net(net_file,weights, caffe.TEST)
 
   # We need an output root file for this:
-  _out_name = inputFile.rstrip(".root") + "_alex_cnn.root"
+  _out_name = inputFile.rstrip(".root") + "_resnet_cnn.root"
 
   name = "image2d_tpc"
   ch = ROOT.TChain("%s_tree" % name)
@@ -75,9 +75,9 @@ def processFile(inputFile):
   exec('br = ch.%s_branch' % name)
 
 
-  outfile = ROOT.TFile("NeutrinoModeAlexNet_7000.root","RECREATE")
+  outfile = ROOT.TFile("NeutrinoModeResnet_4000.root","RECREATE")
   # outfile = ROOT.TFile(output_directories[data_type] + os.path.basename(_out_name),"RECREATE")
-  outTree = ROOT.TTree('alex_net_cnn_tree', 'results tree' )
+  outTree = ROOT.TTree('resnet_cnn_tree', 'results tree' )
 
 
   run_ar = array( 'i', [ 0 ] )
@@ -102,42 +102,38 @@ def processFile(inputFile):
     testNet.forward()
     ch.GetEntry(entry)
     nue_score = testNet.blobs[key].data[0][1]
+    bkg_score = testNet.blobs[key].data[0][0]
+    if (br.event() > 2730 and br.event() < 2740) or nue_score > 0.7:
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry, br.run(), br.event(), nue_score,bkg_score)
 
-    if nue_score > 0.7:
-        print "1 Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
-
-    if entry == 1330 or entry == 1332:
-        print "2 Run {}, Event {}, nue score: {:.3}".format(br.run(), br.event(), nue_score)
+    if entry % _run_print_interval == 0:
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
 
     if br.run() == 620:
       if br.event() == 3756:
-        print "3 Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
 
     if br.run() == 622:
       if br.event() == 2738:
-        print "4 Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
         
     if br.run() == 627:
       if br.event() == 895:
-        print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
         
     if br.run() == 629:
       if br.event() == 25898 or br.event() == 32812:
-        print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
     if br.run() == 634:
       if br.event() == 25212:
-        print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
     if br.run() == 635:
       if br.event() == 25757:
-        print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
     if br.run() == 650:
       if br.event() == 11366:
-        print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
-
-
-    if entry > 10000:
-      break
-
+        print "Entry {}, Run {}, Event {}, nue score: {:.3}, bkg_score: {:.3}".format(entry,br.run(), br.event(), nue_score,bkg_score)
+        
 
 
     run_ar[0] = br.run()

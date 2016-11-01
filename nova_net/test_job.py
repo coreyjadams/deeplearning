@@ -33,19 +33,20 @@ file_prefix.update({'anu_sim' : 'genie_anu_mc_'})
 
 # We need the input network:
 net_file = '/home/coradam/deeplearning/nova_net/nova_ana.prototxt'
-weights = '/home/coradam/deeplearning/nova_net/nova_argoneut_iter_70000.caffemodel'
+weights = '/home/coradam/deeplearning/nova_net/nova_argoneut_iter_6000.caffemodel'
 
 key='probt'
 
 
 def writeCfgFile(inputFile):
-  base_file = "/home/coradam/deeplearning/cfg/nue_filler.cfg"
+  base_file = "/home/coradam/deeplearning/cfg/scale_downsample_data.cfg"
   out_file = "/home/coradam/deeplearning/cfg/process_nova.cfg"
 
   # Read in the base file:
   with open(base_file,"r") as _in:
 
     lines = _in.readlines()
+    print lines[6]
 
     lines[6] = "  InputFiles:   [\"" + inputFile +  "\"] # list comma-separated files (if multiple)\n"
 
@@ -74,7 +75,7 @@ def processFile(inputFile):
   exec('br = ch.%s_branch' % name)
 
 
-  outfile = ROOT.TFile("NeutrinoModeNovaNet_20000.root","RECREATE")
+  outfile = ROOT.TFile("NeutrinoModeNovaNet_6000.root","RECREATE")
   # outfile = ROOT.TFile(output_directories[data_type] + os.path.basename(_out_name),"RECREATE")
   outTree = ROOT.TTree('alex_net_cnn_tree', 'results tree' )
 
@@ -113,7 +114,7 @@ def processFile(inputFile):
         print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
 
     if br.run() == 622:
-      if br.event() == 2738:
+      if abs( br.event() - 2738) < 5:
         print "Entry {}, Run {}, Event {}, nue score: {:.3}".format(entry, br.run(), br.event(), nue_score)
         
     if br.run() == 627:
@@ -163,7 +164,7 @@ def main():
 
   #   print "Processing {} files for type {}".format(len(files),_type)
 
-  files = ["/home/coradam/NeutrinoModeLarCVFilteredROI.root"]
+  files = ["/home/coradam/neutrino_supera/R622_E2001-E4000_supera.root"]
 
   for _file in files:
     print "Processing file {}".format(_file)

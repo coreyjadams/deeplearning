@@ -9,8 +9,8 @@ sourcedir = "/home/coradam/deeplearning/alex_net/"
 
 plot_prefix = "alexnet_argoneut_"
 
-n_training_events = (18454. + 24470) / 30.
-n_testing_events = (54407 + 8793) / 200.
+n_training_events = (500000) / 10.
+n_testing_events = (200000) / 200.
 
 #this is the prefix to the files:
 fileprefix = "alex_argoneut_savestate_"
@@ -107,8 +107,8 @@ def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
 
   fig, ax = plt.subplots(figsize=(12,8))
 
-  plt.plot(epochs, trainingAccuracy,label="Test Accuracy")
-  plt.plot(test_epochs, testAccuracy,label="Train Accuracy",marker="o",color='r',linewidth=4)
+  plt.plot(epochs, trainingAccuracy,label="Train Accuracy")
+  plt.plot(test_epochs, testAccuracy,label="Test Accuracy",marker="o",color='r',linewidth=4)
 
   plt.plot(test_epochs, [1]*len(test_epochs))
 

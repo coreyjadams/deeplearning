@@ -5,17 +5,16 @@ caffe.set_device(1)
 
 import numpy
 
-import alex_net.solver
 import tempfile
 import os
 
 class solveControlParams(object):
     def __init__(self):
-        self.max_iterations = 50000
+        self.max_iterations = 100000
         self.n_iteration_per_block = 1000
-        self.n_tests = 200
+        self.n_tests = 400
         # Index starts from 0
-        self.start_iteration = 20000
+        self.start_iteration = 6000
 
         self.training_prototxt = 'nova_net/nova_train_val.prototxt'
         self.testing_prototxt = 'nova_net/nova_test_val.prototxt'
@@ -33,7 +32,7 @@ class solveControlParams(object):
         self.type = 'SGD'
 
         # Set the initial learning rate for SGD.
-        self.base_lr = 0.0005
+        self.base_lr = 0.001
 
         # Set `lr_policy` to define how the learning rate changes during training.
         # Here, we 'step' the learning rate by multiplying it by a factor `gamma`
@@ -79,7 +78,7 @@ class solveControlParams(object):
         s.train_net = train_net_path
         if test_net_path is not None:
             s.test_net.append(test_net_path)
-            s.test_interval = 1000  # Test after every 1000 training iterations.
+            s.test_interval = 10  # Test after every 1000 training iterations.
             s.test_iter.append(100) # Test on 100 batches each time we test.
 
 
@@ -182,7 +181,7 @@ for block in xrange(n_blocks):
     # testNet = caffe.Net(params.testing_prototxt,weights['nova'], caffe.TEST)
     # test_accuracy = numpy.zeros(params.n_tests)
     # for i in xrange(params.n_tests):
-    #     test_accuracy[i] = testNet.forward()['accuracy']
+        # test_accuracy[i] = testNet.forward()['accuracy']
 
     iteration = (block+1)*params.n_iteration_per_block + params.start_iteration
 

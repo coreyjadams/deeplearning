@@ -7,7 +7,7 @@ layer {
 
   root_data_param {
     batch_size: 1
-    filler_config: "/home/coradam/deeplearning/cfg/test_filler.cfg"
+    filler_config: "/home/coradam/deeplearning/cfg/scale_downsample_test.cfg"
     filler_name: "Train"
 #    use_thread: true
   }

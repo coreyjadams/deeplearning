@@ -7,7 +7,7 @@ layer {
 
   root_data_param {
     batch_size: 1
-    filler_config: "/home/coradam/deeplearning/cfg/process_alex_coll.cfg"
+    filler_config: "/home/coradam/deeplearning/cfg/process_alex.cfg"
     filler_name: "Ana"
   }
 }

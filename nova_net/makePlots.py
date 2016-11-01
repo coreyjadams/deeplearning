@@ -44,7 +44,7 @@ def readFiles():
     dat = numpy.load(filename)
     loss_list.append(dat['loss'])
     acc_list.append(dat['accuracy'])
-    testacc_list.append(dat['testAccuracy'])
+    # testacc_list.append(dat['testAccuracy'])
     n_points += len(dat['loss'])
   
   # Package the various things into one 
@@ -54,13 +54,14 @@ def readFiles():
     
   # The test accuracy has to be combined into 
 
-  test = numpy.zeros(len(testacc_list))
-  testacc_it = numpy.zeros(len(testacc_list))
-  for i in xrange(len(testacc_list)):
-    test[i] = numpy.mean(testacc_list[i])
-    testacc_it[i] = temp[i][0]
+  # test = numpy.zeros(len(testacc_list))
+  # testacc_it = numpy.zeros(len(testacc_list))
+  # for i in xrange(len(testacc_list)):
+  #   test[i] = numpy.mean(testacc_list[i])
+  #   testacc_it[i] = temp[i][0]
 
-  return acc, loss, test, testacc_it
+  # return acc, loss, test, testacc_it
+  return acc, loss, test
 
 
 def plotLoss(loss):
@@ -100,15 +101,14 @@ def plotLoss(loss):
   plt.savefig(outdir + plot_prefix + "loss.pdf")
 
   plt.show()
-def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
+
+def plotAccuracy(trainingAccuracy):
 
   n_iterations = len(trainingAccuracy)
 
 
   epochs = numpy.arange(0,n_iterations) / (1.0*n_training_events)
 
-
-  test_epochs = testacc_it / n_training_events
 
   # Fit the last 25 points from the training with a line
   
@@ -117,9 +117,7 @@ def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
   fig, ax = plt.subplots(figsize=(12,8))
 
   plt.plot(epochs, trainingAccuracy,label="Test Accuracy")
-  plt.plot(test_epochs, testAccuracy,label="Train Accuracy",marker="o",color='r',linewidth=4)
 
-  plt.plot(test_epochs, [1]*len(test_epochs))
 
   plt.xlabel("Epochs",fontsize=25)
   plt.ylabel("Accuracy",fontsize=25)
@@ -142,11 +140,11 @@ def plotAccuracy(trainingAccuracy,testAccuracy, testacc_it):
 
 def main():
 
-  accuracy, loss, test, test_it = readFiles()
+  accuracy, loss, test = readFiles()
 
 
   plotLoss(loss)
-  plotAccuracy(accuracy, test, test_it)
+  plotAccuracy(accuracy)
 
 
 if __name__ == '__main__':
